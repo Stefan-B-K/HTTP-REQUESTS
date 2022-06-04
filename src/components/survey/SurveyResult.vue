@@ -1,14 +1,19 @@
 <template>
   <li>
+    <header>
     <p>
       <span class="highlight">{{ result.name }}</span> rated the learning experience
       <span :class="ratingClass">{{ result.rating }}</span>.
     </p>
+    <base-button mode="flat">Delete</base-button>
+    </header>
   </li>
 </template>
 
 <script>
 export default {
+  components: {},
+
   props: ['result'],
   computed: {
     ratingClass() {
@@ -19,6 +24,12 @@ export default {
 </script>
 
 <style scoped>
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 li {
   margin: 1rem 0;
   border: 1px solid #ccc;

@@ -5,13 +5,17 @@
       <div>
         <base-button @click="loadResults">Load Submitted Experiences</base-button>
       </div>
-      <ul>
+      <p v-if="isLoading">Loading...</p>
+      <p v-if="error">{{ error }}</p>
+      <p v-else-if="results.length === 0">No stored survey results!</p>
+      <ul  v-else>
         <survey-result
             v-for='result in results'
             :key='result.id'
             :result='result'
         ></survey-result>
       </ul>
+
     </base-card>
   </section>
 </template>
@@ -26,16 +30,25 @@ export default {
   components: {SurveyResult},
   data() {
     return {
-      results: []
+      results: [],
+      isLoading: false,
+      error: null
     }
   },
   methods: {
     loadResults() {
+      this.isLoading = true
+      this.error = null
       axios.get(FIREBASE_DB + 'surveys.json')
           .then(response => {
+            this.isLoading = false
             this.results = []
             for (let id in response.data)
               this.results.push({id, ...response.data[id]})
+          })
+          .catch(error => {
+            this.isLoading = false
+            this.error = 'Failed to fetch data from server: ' + error.message
           })
     },
   },
