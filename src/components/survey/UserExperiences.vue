@@ -8,11 +8,12 @@
       <p v-if="isLoading">Loading...</p>
       <p v-if="error">{{ error }}</p>
       <p v-else-if="results.length === 0">No stored survey results!</p>
-      <ul  v-else>
+      <ul v-else>
         <survey-result
             v-for='result in results'
             :key='result.id'
             :result='result'
+            @delete-result="deleteResult(result.id)"
         ></survey-result>
       </ul>
 
@@ -41,6 +42,7 @@ export default {
       this.error = null
       axios.get(FIREBASE_DB + 'surveys.json')
           .then(response => {
+            console.log(response.data)
             this.isLoading = false
             this.results = []
             for (let id in response.data)
@@ -51,6 +53,19 @@ export default {
             this.error = 'Failed to fetch data from server: ' + error.message
           })
     },
+    deleteResult(id) {
+      this.error = null
+      let updatedResults = {}
+      this.results = this.results.filter(result => result.id !== id)
+      this.results .forEach(result => {
+            const {id, ...rest} = result;
+            updatedResults[id] = rest;
+          })
+      axios.put(FIREBASE_DB + 'surveys.json', updatedResults)
+          .catch(error => {
+            this.error = 'Failed to delete data from server: ' + error.message
+          })
+    }
   },
   mounted() {
     this.loadResults()

@@ -5,15 +5,14 @@
       <span class="highlight">{{ result.name }}</span> rated the learning experience
       <span :class="ratingClass">{{ result.rating }}</span>.
     </p>
-    <base-button mode="flat">Delete</base-button>
+    <base-button mode="flat" @click="$emit('delete-result')">Delete</base-button>
     </header>
   </li>
 </template>
 
 <script>
 export default {
-  components: {},
-
+  emits: ['delete-result'],
   props: ['result'],
   computed: {
     ratingClass() {
