@@ -30,7 +30,10 @@
 
 
 <script>
+import axios from 'axios'
+
 const FIREBASE_DB = 'https://vue-http-demo-d316d-default-rtdb.europe-west1.firebasedatabase.app/';
+
 export default {
   data () {
     return {
@@ -44,16 +47,11 @@ export default {
         this.form.invalidInput = true;
         return;
       }
-      fetch(FIREBASE_DB + 'surveys.json', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          name: this.form.enteredName,
-          rating: this.form.chosenRating
-        })
-      });
+
+      axios.post(FIREBASE_DB + 'surveys.json', {
+        name: this.form.enteredName,
+        rating: this.form.chosenRating
+      })
 
       this.form = { ...this.formDefaults() };
     },

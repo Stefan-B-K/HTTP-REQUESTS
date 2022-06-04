@@ -3,13 +3,13 @@
     <base-card>
       <h2>Submitted Experiences</h2>
       <div>
-        <base-button>Load Submitted Experiences</base-button>
+        <base-button @click="loadResults">Load Submitted Experiences</base-button>
       </div>
       <ul>
         <survey-result
-          v-for='result in results'
-          :key='result.id'
-          :result='result'
+            v-for='result in results'
+            :key='result.id'
+            :result='result'
         ></survey-result>
       </ul>
     </base-card>
@@ -17,12 +17,32 @@
 </template>
 
 <script>
-import SurveyResult from './SurveyResult.vue';
+import SurveyResult from './SurveyResult.vue'
+import axios from "axios"
+
+const FIREBASE_DB = 'https://vue-http-demo-d316d-default-rtdb.europe-west1.firebasedatabase.app/';
 
 export default {
-  props: ['results'],
-  components: { SurveyResult }
-};
+  components: {SurveyResult},
+  data() {
+    return {
+      results: []
+    }
+  },
+  methods: {
+    loadResults() {
+      axios.get(FIREBASE_DB + 'surveys.json')
+          .then(response => {
+            this.results = []
+            for (let id in response.data)
+              this.results.push({id, ...response.data[id]})
+          })
+    },
+  },
+  mounted() {
+    this.loadResults()
+  }
+}
 </script>
 
 <style scoped>
